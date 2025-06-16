@@ -14,8 +14,7 @@ from ..core.config import settings
 from .vector_store import vector_store
 
 # Set Google API Key
-GOOGLE_API_KEY = "AIzaSyCUWiRl0qbvHVA-GafKsncf_UlQrnHaTw0"
-genai.configure(api_key=GOOGLE_API_KEY)
+genai.configure(api_key=settings.GOOGLE_API_KEY)
 
 class ContentRewriterAgent:
     def __init__(self):
@@ -23,13 +22,13 @@ class ContentRewriterAgent:
         self.llm = ChatGoogleGenerativeAI(
             model="gemini-1.5-flash",
             temperature=settings.MODEL_TEMPERATURE,
-            google_api_key=GOOGLE_API_KEY
+            google_api_key=settings.GOOGLE_API_KEY
         )
         
         # Initialize embeddings
         self.embeddings = GoogleGenerativeAIEmbeddings(
             model="models/embedding-001",
-            google_api_key=GOOGLE_API_KEY
+            google_api_key=settings.GOOGLE_API_KEY
         )
         
         # Create Chroma client from existing ChromaDB
