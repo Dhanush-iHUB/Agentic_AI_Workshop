@@ -2,6 +2,9 @@ from pydantic_settings import BaseSettings
 from typing import List, Dict, Any
 import os
 from pathlib import Path
+from dotenv import load_dotenv
+
+load_dotenv()
 
 class Settings(BaseSettings):
     PROJECT_NAME: str = "Content Rewriter API"
@@ -13,7 +16,7 @@ class Settings(BaseSettings):
     
     # Gemini Settings
     MODEL_TEMPERATURE: float = 0.7
-    GOOGLE_API_KEY: str = None
+    GOOGLE_API_KEY: str = os.getenv("GOOGLE_API_KEY", "your_default_google_api_key_here")
     
     # Predefined Personas
     PERSONAS: List[str] = [
