@@ -13,7 +13,7 @@ class Settings(BaseSettings):
     
     # Gemini Settings
     MODEL_TEMPERATURE: float = 0.7
-    GOOGLE_API_KEY: str = os.environ.get("GOOGLE_API_KEY", "")
+    GOOGLE_API_KEY: str = None
     
     # Predefined Personas
     PERSONAS: List[str] = [
