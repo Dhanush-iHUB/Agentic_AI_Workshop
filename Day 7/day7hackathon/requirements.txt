@@ -1,0 +1,8 @@
+langchain==0.1.12
+langchain-openai==0.0.8
+beautifulsoup4==4.12.3
+gradio==4.19.2
+python-dotenv==1.0.1
+chromadb==0.4.24
+html5lib==1.1
+faiss-cpu==1.7.4 
