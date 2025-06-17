@@ -1,7 +1,7 @@
 from .base_agent import BaseAgent
 
 class ContentRefinementAgent(BaseAgent):
-    def __init__(self, model_name="gpt-3.5-turbo", temperature=0.7):
+    def __init__(self, model_name="gemini-1.5-flash", temperature=0.7):
         super().__init__(model_name, temperature)
     
     def process(self, content, persona, style_examples):

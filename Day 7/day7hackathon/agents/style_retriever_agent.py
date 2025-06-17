@@ -1,12 +1,12 @@
 from .base_agent import BaseAgent
-from langchain.embeddings import OpenAIEmbeddings
+from langchain_google_genai import GoogleGenerativeAIEmbeddings
 from langchain.vectorstores import FAISS
 from sample_data.style_examples import GENZ_EXAMPLES, PROFESSIONAL_EXAMPLES
 
 class StyleRetrieverAgent(BaseAgent):
-    def __init__(self, model_name="gpt-3.5-turbo", temperature=0.7):
+    def __init__(self, model_name="gemini-1.5-flash", temperature=0.7):
         super().__init__(model_name, temperature)
-        self.embeddings = OpenAIEmbeddings()
+        self.embeddings = GoogleGenerativeAIEmbeddings()
         self._initialize_vector_stores()
         
     def _initialize_vector_stores(self):
