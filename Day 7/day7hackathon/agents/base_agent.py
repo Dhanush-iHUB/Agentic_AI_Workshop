@@ -2,7 +2,7 @@ from langchain_google_genai import ChatGoogleGenerativeAI
 from abc import ABC, abstractmethod
 
 class BaseAgent(ABC):
-    def __init__(self, model_name="gemini-1.5-flash", temperature=0.7):
+    def __init__(self, model_name="models/gemini-1.5-flash", temperature=0.7):
         self.llm = ChatGoogleGenerativeAI(
             model=model_name,
             temperature=temperature

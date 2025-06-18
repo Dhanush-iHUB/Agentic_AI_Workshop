@@ -1,52 +1,54 @@
+# Sample style examples for different personas
+
 GENZ_EXAMPLES = [
     {
-        "content": "Yo! 🔥 Ready to level up your digital game? Our app is literally the most fire way to stay connected with your squad. No cap, we've got all the features you need to keep it 100 and slay your social life!",
-        "style": "casual, emoji-rich, trendy slang, short sentences",
-        "type": "landing_page"
+        "content": "OMG fam! 🔥 Just dropped the hottest collection ever! These fits are giving main character energy fr fr. Don't sleep on this vibe! #slay",
+        "style": "Casual, emoji-rich, trendy slang",
+        "type": "promotional"
     },
     {
-        "content": "TBH, this deal is bussin' fr fr! Grab our premium features now and watch your productivity go brr! 💯 Don't sleep on this offer - it's giving main character energy!",
-        "style": "informal, enthusiastic, modern slang",
-        "type": "promotion"
+        "content": "No cap, this AI tech is bussin! 💯 Level up your game with our smart tools that hit different. We stay winning! #tech #innovation",
+        "style": "Modern slang, enthusiastic, informal",
+        "type": "product"
     },
     {
-        "content": "Stressed about deadlines? Same bestie! 😩 Our task manager hits different - it's the real MVP of getting stuff done. No more fumbling through notes app!",
-        "style": "relatable, empathetic, trendy",
-        "type": "product_description"
+        "content": "Bestie, you're gonna love this! 🤩 Our app makes everything super easy and aesthetic. It's literally the most satisfying thing ever!",
+        "style": "Personal, emotional, enthusiastic",
+        "type": "product"
     }
 ]
 
 PROFESSIONAL_EXAMPLES = [
     {
-        "content": "Elevate your enterprise productivity with our comprehensive suite of business solutions. Our platform delivers measurable results through streamlined workflows and data-driven insights.",
-        "style": "formal, professional, solution-focused",
-        "type": "landing_page"
+        "content": "Our enterprise solution delivers measurable ROI through advanced analytics and seamless integration capabilities.",
+        "style": "Formal, business-focused, technical",
+        "type": "product"
     },
     {
-        "content": "Experience unprecedented efficiency with our enterprise-grade collaboration tools. Our proven methodology has helped Fortune 500 companies achieve 30% increased productivity.",
-        "style": "business formal, metric-focused",
-        "type": "promotion"
+        "content": "Leverage our cutting-edge technology to optimize operational efficiency and drive strategic growth initiatives.",
+        "style": "Professional, solution-oriented, formal",
+        "type": "promotional"
     },
     {
-        "content": "Optimize your workflow with our advanced project management solution. Leverage real-time analytics and cross-functional integration to drive business outcomes.",
-        "style": "professional, technical, formal",
-        "type": "product_description"
+        "content": "Our comprehensive suite of tools enables data-driven decision making and enhances organizational productivity.",
+        "style": "Technical, business-oriented, formal",
+        "type": "product"
     }
 ]
 
 CTA_EXAMPLES = {
     "genz": [
-        "Let's Go! 🚀",
-        "Join the Vibe ✨",
-        "Get Started (it's giving main character energy)",
-        "Level Up Now! 💯",
-        "Don't Sleep On This! 🔥"
+        "Get Started Now! 🚀",
+        "Join the Squad!",
+        "Level Up Your Game! ⚡",
+        "Don't Miss Out! 🔥",
+        "Try it RN! ✨"
     ],
     "professional": [
         "Schedule a Demo",
-        "Start Free Trial",
         "Request Consultation",
         "Learn More",
-        "Contact Sales Team"
+        "Contact Sales",
+        "Start Free Trial"
     ]
 } 

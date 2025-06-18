@@ -1,7 +1,7 @@
 from .base_agent import BaseAgent
 
 class ContentRefinementAgent(BaseAgent):
-    def __init__(self, model_name="gemini-1.5-flash", temperature=0.7):
+    def __init__(self, model_name="models/gemini-1.5-flash", temperature=0.7):
         super().__init__(model_name, temperature)
     
     def process(self, content, persona, style_examples):
@@ -15,11 +15,11 @@ class ContentRefinementAgent(BaseAgent):
             str: Rewritten content
         """
         # Create a detailed prompt using style examples
-        style_prompt = "\n".join([
-            f"Style Example {i+1}:",
-            f"Content: {ex['content']}",
+        style_examples_text = "\n".join([
+            f"Style Example {idx+1}:\n"
+            f"Content: {ex['content']}\n"
             f"Style: {ex['style']}"
-            for i, ex in enumerate(style_examples)
+            for idx, ex in enumerate(style_examples)
         ])
         
         system_prompt = f"""You are an expert content writer specializing in writing for {'Generation Z' if persona == 'genz' else 'Professional'} audiences.
@@ -39,7 +39,7 @@ class ContentRefinementAgent(BaseAgent):
         - Data-driven and solution-focused language
         
         Here are some style examples to guide you:
-        {style_prompt}
+        {style_examples_text}
         
         Maintain the same key information and message, but adapt the style completely."""
         

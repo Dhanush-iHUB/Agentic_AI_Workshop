@@ -3,6 +3,7 @@ import json
 from content_optimizer import ContentOptimizer
 import os
 from dotenv import load_dotenv
+from bs4 import BeautifulSoup
 
 # Load environment variables
 load_dotenv()
@@ -10,13 +11,40 @@ load_dotenv()
 # Initialize the optimizer
 optimizer = ContentOptimizer()
 
-def optimize_content(html_input, target_persona=None):
+def validate_html(html_content):
+    try:
+        soup = BeautifulSoup(html_content, 'html5lib')
+        return True, "HTML is valid"
+    except Exception as e:
+        return False, f"Invalid HTML: {str(e)}"
+
+def process_html_file(file_obj):
+    if file_obj is None:
+        return None
+    content = file_obj.decode('utf-8')
+    is_valid, message = validate_html(content)
+    if not is_valid:
+        raise ValueError(message)
+    return content
+
+def optimize_content(html_input, html_file, target_persona=None):
     """
     Process the input HTML and return optimized content
     """
     try:
+        # Use file content if provided, otherwise use text input
+        final_html = process_html_file(html_file) if html_file else html_input
+        
+        if not final_html:
+            return "No HTML content provided", "Error: Please provide HTML content"
+            
+        # Validate HTML
+        is_valid, message = validate_html(final_html)
+        if not is_valid:
+            return message, "Error: Invalid HTML"
+            
         # Optimize the content
-        optimized_html, report = optimizer.optimize_content(html_input, target_persona)
+        optimized_html, report = optimizer.optimize_content(final_html, target_persona)
         
         # Format the report for display
         report_str = json.dumps(report, indent=2)
@@ -43,6 +71,11 @@ with gr.Blocks(title="Persona-Driven Content Optimizer") as iface:
                 placeholder="Paste your HTML content here...",
                 lines=10
             )
+            file_input = gr.File(
+                label="Or Upload HTML File",
+                file_types=[".html", ".htm"],
+                type="binary"
+            )
             persona_choice = gr.Radio(
                 choices=["Auto-detect", "Generation Z", "Professional"],
                 label="Target Persona",
@@ -61,17 +94,18 @@ with gr.Blocks(title="Persona-Driven Content Optimizer") as iface:
             )
     
     submit_btn.click(
-        fn=lambda html, persona: optimize_content(
+        fn=lambda html, file, persona: optimize_content(
             html,
+            file,
             None if persona == "Auto-detect" else persona.lower().replace(" ", "")
         ),
-        inputs=[input_html, persona_choice],
+        inputs=[input_html, file_input, persona_choice],
         outputs=[output_html, optimization_report]
     )
     
     gr.Markdown("""
     ### 📝 Instructions
-    1. Paste your HTML content in the input box
+    1. Either paste your HTML content in the input box OR upload an HTML file
     2. Choose your target audience (or let the system detect it)
     3. Click "Optimize Content" to get your persona-optimized content
     4. Review the optimized HTML and detailed report
@@ -82,9 +116,9 @@ with gr.Blocks(title="Persona-Driven Content Optimizer") as iface:
     """)
 
 if __name__ == "__main__":
-    # Check if OPENAI_API_KEY is set
-    if not os.getenv("OPENAI_API_KEY"):
-        print("Warning: OPENAI_API_KEY environment variable is not set!")
+    # Check if GOOGLE_API_KEY is set
+    if not os.getenv("GOOGLE_API_KEY"):
+        print("Warning: GOOGLE_API_KEY environment variable is not set!")
         print("Please set it in your .env file or environment variables.")
     
     # Launch the interface

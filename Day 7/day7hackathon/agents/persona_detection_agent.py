@@ -1,6 +1,6 @@
 from .base_agent import BaseAgent
 from langchain_google_genai import ChatGoogleGenerativeAI
-from langchain_core.pydantic_v1 import BaseModel, Field
+from pydantic import BaseModel, Field
 
 class PersonaResult(BaseModel):
     persona: str = Field(..., description="Either 'genz' or 'professional'")
@@ -8,7 +8,7 @@ class PersonaResult(BaseModel):
     reasoning: str = Field(..., description="Explanation for the decision")
 
 class PersonaDetectionAgent(BaseAgent):
-    def __init__(self, model_name="gemini-1.5-flash", temperature=0.7):
+    def __init__(self, model_name="models/gemini-1.5-flash", temperature=0.7):
         # Use ChatGoogleGenerativeAI directly for structured output
         self.llm = ChatGoogleGenerativeAI(
             model=model_name,
