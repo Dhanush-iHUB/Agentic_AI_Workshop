@@ -30,16 +30,20 @@ class PersonaDetectionAgent(BaseAgent):
         Returns:
             dict: Contains persona type, confidence score, and reasoning
         """
+        print(f"[PersonaDetectionAgent] Input: content={content[:60]}...")
         messages = self._create_messages(
             self.system_prompt,
             f"Analyze this content and determine the target audience:\n\n{content}"
         )
         try:
             result = self.llm.invoke(messages)
+            print(f"[PersonaDetectionAgent] Output: {result.dict()}")
             return result.dict()
         except Exception as e:
-            return {
+            fallback = {
                 "persona": "professional",  # default to professional if parsing fails
                 "confidence": 0.5,
                 "reasoning": f"Failed to parse LLM response: {str(e)}"
-            } 
+            }
+            print(f"[PersonaDetectionAgent] Fallback Output: {fallback}")
+            return fallback 

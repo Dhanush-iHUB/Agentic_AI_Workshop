@@ -57,10 +57,12 @@ class ContentOptimizer:
         # Detect persona if not specified
         if not target_persona:
             persona_result = self.persona_detector.process(all_text)
+            print(f"[ContentOptimizer] PersonaDetectionAgent output: {persona_result}")
             target_persona = persona_result['persona']
         
         # Get style examples
         style_examples = self.style_retriever.process(all_text, target_persona)
+        print(f"[ContentOptimizer] StyleRetrieverAgent output: {style_examples}")
         
         # Process each text element
         for elem in text_elements:
@@ -69,6 +71,7 @@ class ContentOptimizer:
                 target_persona,
                 style_examples
             )
+            print(f"[ContentOptimizer] ContentRefinementAgent output: {optimized_content[:200]}...")
             elem['element'].string = optimized_content
         
         # Optimize CTAs
@@ -79,6 +82,7 @@ class ContentOptimizer:
                 target_persona,
                 cta['content']
             )
+            print(f"[ContentOptimizer] CTAOptimizationAgent output: {optimized_cta}")
             cta['element'].string = optimized_cta['primary_cta']
             cta_recommendations.append({
                 'original': cta['content'],

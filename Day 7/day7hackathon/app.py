@@ -4,6 +4,7 @@ from content_optimizer import ContentOptimizer
 import os
 from dotenv import load_dotenv
 from bs4 import BeautifulSoup
+import traceback
 
 # Load environment variables
 load_dotenv()
@@ -28,6 +29,12 @@ def process_html_file(file_obj):
     return content
 
 def optimize_content(html_input, html_file, target_persona=None):
+    persona_map = {
+        "generationz": "genz",
+        "professional": "professional"
+    }
+    if target_persona:
+        target_persona = persona_map.get(target_persona, target_persona)
     """
     Process the input HTML and return optimized content
     """
@@ -49,10 +56,14 @@ def optimize_content(html_input, html_file, target_persona=None):
         # Format the report for display
         report_str = json.dumps(report, indent=2)
         
+        print(f"[App] Final Optimized HTML: {optimized_html[:200]}...")
+        print(f"[App] Optimization Report: {report_str}")
         return optimized_html, report_str
     
     except Exception as e:
-        return str(e), "Error occurred during optimization"
+        tb = traceback.format_exc()
+        print(f"[App] Exception: {tb}")
+        return "", f"Error occurred during optimization:\n{str(e)}\n\nTraceback:\n{tb}"
 
 # Create the Gradio interface
 with gr.Blocks(title="Persona-Driven Content Optimizer") as iface:

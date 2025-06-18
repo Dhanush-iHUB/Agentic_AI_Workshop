@@ -36,6 +36,7 @@ class StyleRetrieverAgent(BaseAgent):
         Returns:
             list: Relevant style examples with their metadata
         """
+        print(f"[StyleRetrieverAgent] Input: content={content[:60]}..., persona={persona}")
         store = self.genz_store if persona == "genz" else self.prof_store
         results = store.similarity_search_with_score(content, k=2)
         
@@ -49,4 +50,5 @@ class StyleRetrieverAgent(BaseAgent):
                 "relevance_score": float(score)
             })
             
+        print(f"[StyleRetrieverAgent] Output: {examples}")
         return examples 

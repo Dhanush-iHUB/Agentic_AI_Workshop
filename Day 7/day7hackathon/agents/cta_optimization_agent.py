@@ -17,6 +17,7 @@ class CTAOptimizationAgent(BaseAgent):
         Returns:
             dict: Optimized CTA suggestions and placement recommendations
         """
+        print(f"[CTAOptimizationAgent] Input: content={content[:60]}..., persona={persona}, original_cta={original_cta}")
         example_ctas = self.cta_examples[persona]
         
         system_prompt = f"""You are an expert in optimizing call-to-action (CTA) elements for {'Generation Z' if persona == 'genz' else 'Professional'} audiences.
@@ -39,13 +40,18 @@ class CTAOptimizationAgent(BaseAgent):
         
         messages = self._create_messages(system_prompt, context)
         response = self.llm.invoke(messages)
+        print(f"[CTAOptimizationAgent] Raw Output: {response.content[:200]}...")
         
         try:
-            return json.loads(response.content)
+            result = json.loads(response.content)
+            print(f"[CTAOptimizationAgent] Parsed Output: {result}")
+            return result
         except json.JSONDecodeError:
-            return {
+            fallback = {
                 "primary_cta": example_ctas[0],
                 "alternative_ctas": example_ctas[1:3],
                 "placement_recommendation": "Prominently display above the fold",
                 "styling_tips": "Use high-contrast colors and clear typography"
-            } 
+            }
+            print(f"[CTAOptimizationAgent] Fallback Output: {fallback}")
+            return fallback 

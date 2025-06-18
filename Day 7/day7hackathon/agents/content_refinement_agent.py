@@ -14,6 +14,7 @@ class ContentRefinementAgent(BaseAgent):
         Returns:
             str: Rewritten content
         """
+        print(f"[ContentRefinementAgent] Input: content={content[:60]}..., persona={persona}, style_examples={style_examples}")
         # Create a detailed prompt using style examples
         style_examples_text = "\n".join([
             f"Style Example {idx+1}:\n"
@@ -47,5 +48,5 @@ class ContentRefinementAgent(BaseAgent):
         
         messages = self._create_messages(system_prompt, user_prompt)
         response = self.llm.invoke(messages)
-        
+        print(f"[ContentRefinementAgent] Output: {response.content[:200]}...")
         return response.content 
