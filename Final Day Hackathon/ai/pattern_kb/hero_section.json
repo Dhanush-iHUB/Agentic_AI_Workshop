@@ -1,0 +1,10 @@
+{
+  "name": "hero_section",
+  "category": "layout",
+  "description": "Large top banner with headline, supporting text and primary CTA button.",
+  "requirements": [
+    "full-width background",
+    "centered content"
+  ],
+  "tags": ["banner", "cta", "large"]
+} 
