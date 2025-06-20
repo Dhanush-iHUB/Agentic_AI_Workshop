@@ -3,7 +3,7 @@ import logging
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from agent import process_html_to_lcnc
-from typing import Optional
+from typing import Optional, Union
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -24,7 +24,8 @@ class ConversionRequest(BaseModel):
 class ConversionResponse(BaseModel):
     """Response model for conversion results"""
     status: str
-    components: list
+    lcnc_structure: Union[list, dict]
+    analysis_report: dict
     error: Optional[str] = None
 
 @app.post("/convert", response_model=ConversionResponse)
@@ -41,14 +42,16 @@ async def convert_html_to_lcnc(request: ConversionRequest) -> ConversionResponse
         if result.get("error"):
             return ConversionResponse(
                 status="error",
-                components=[],
+                lcnc_structure=[],
+                analysis_report={},
                 error=result["error"]
             )
         
         # Return successful response
         return ConversionResponse(
             status="success",
-            components=result.get("ranked_components", []),
+            lcnc_structure=result.get("lcnc_structure", []),
+            analysis_report=result.get("analysis_report", {}),
             error=None
         )
         

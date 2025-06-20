@@ -4,7 +4,9 @@ import { useState, useRef } from 'react';
 
 export default function Home() {
   const [file, setFile] = useState<File | null>(null);
-  const [result, setResult] = useState<string>('');
+  const [rawResult, setRawResult] = useState<string>('');
+  const [lcncStructure, setLcncStructure] = useState<any>(null);
+  const [analysisReport, setAnalysisReport] = useState<any>(null);
   const [loading, setLoading] = useState(false);
   const [dragActive, setDragActive] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -50,7 +52,9 @@ export default function Home() {
       body: formData,
     });
     const data = await res.json();
-    setResult(JSON.stringify(data, null, 2));
+    setRawResult(JSON.stringify(data, null, 2));
+    setLcncStructure(data.lcnc_structure);
+    setAnalysisReport(data.analysis_report);
     setLoading(false);
   };
 
@@ -107,10 +111,45 @@ export default function Home() {
             {loading ? 'Processing...' : 'Upload'}
           </button>
         </form>
-        {result && (
+        {rawResult && (
           <div style={{ marginTop: 32, textAlign: 'left' }}>
             <h2 style={{ fontSize: 20, fontWeight: 600, color: '#3730a3', marginBottom: 8 }}>Result:</h2>
-            <pre style={{ background: '#f3f4f6', borderRadius: 8, padding: 16, fontSize: 14, color: '#334155', overflowX: 'auto' }}>{result}</pre>
+            <pre style={{ background: '#f3f4f6', borderRadius: 8, padding: 16, fontSize: 14, color: '#334155', overflowX: 'auto' }}>{rawResult}</pre>
+          </div>
+        )}
+
+        {lcncStructure && (
+          <div style={{ marginTop: 32, textAlign: 'left' }}>
+            <h2 style={{ fontSize: 20, fontWeight: 600, color: '#3730a3', marginBottom: 8 }}>LCNC Structure</h2>
+            <pre style={{ background: '#f3f4f6', borderRadius: 8, padding: 16, fontSize: 14, color: '#334155', overflowX: 'auto' }}>{JSON.stringify(lcncStructure, null, 2)}</pre>
+          </div>
+        )}
+
+        {analysisReport && (
+          <div style={{ marginTop: 32, textAlign: 'left' }}>
+            <h2 style={{ fontSize: 20, fontWeight: 600, color: '#3730a3', marginBottom: 8 }}>Analysis Report</h2>
+            {Object.entries(analysisReport).map(([section, value]) => (
+              <div key={section} style={{ marginBottom: 16 }}>
+                <h3 style={{ fontSize: 16, fontWeight: 600, color: '#4f46e5', marginBottom: 4 }}>{section}</h3>
+                {Array.isArray(value) ? (
+                  value.length === 0 ? (
+                    <p style={{ color: '#64748b' }}>No data</p>
+                  ) : (
+                    <ul style={{ listStyle: 'disc', paddingLeft: 20 }}>
+                      {value.map((item, idx) => (
+                        <li key={idx} style={{ marginBottom: 4 }}>
+                          <pre style={{ background: '#f9fafb', borderRadius: 6, padding: 8, overflowX: 'auto' }}>{JSON.stringify(item, null, 2)}</pre>
+                        </li>
+                      ))}
+                    </ul>
+                  )
+                ) : typeof value === 'object' && value !== null ? (
+                  <pre style={{ background: '#f9fafb', borderRadius: 6, padding: 8, overflowX: 'auto' }}>{JSON.stringify(value, null, 2)}</pre>
+                ) : (
+                  <p>{String(value)}</p>
+                )}
+              </div>
+            ))}
           </div>
         )}
       </div>

@@ -181,17 +181,36 @@ def process_html_to_lcnc(html_content: str, css_content: str) -> Dict[str, Any]:
         workflow = create_workflow_graph()
         final_state = workflow.invoke(initial_state)
         
-        # Decide which components to return
-        comps = final_state.get("ranked_components") or final_state.get("optimized_components") or final_state.get("mapped_components") or final_state.get("parsed_components")
+        # Decide which structure to return for LCNC rendering
+        lcnc_structure = (
+            final_state.get("layout_structure")
+            or final_state.get("optimized_components")
+            or final_state.get("mapped_components")
+            or final_state.get("parsed_components")
+            or []
+        )
+
+        # Build analysis report by gathering everything that is useful for consumers
+        analysis_report = {
+            "matched_patterns": final_state.get("matched_patterns", []),
+            "pattern_metadata": final_state.get("pattern_metadata", {}),
+            "compatibility": final_state.get("compatibility", []),
+            "fixes": final_state.get("fixes", []),
+            "ranking_metadata": final_state.get("ranking_metadata", {}),
+            "responsive_config": final_state.get("responsive_config", {}),
+            "workflow_agent": final_state.get("current_agent")
+        }
 
         return {
             "error": final_state.get("error"),
-            "components": comps
+            "lcnc_structure": lcnc_structure,
+            "analysis_report": analysis_report
         }
         
     except Exception as e:
         logger.error(f"Error in workflow execution: {str(e)}")
         return {
             "error": f"Workflow execution error: {str(e)}",
-            "ranked_components": []
+            "lcnc_structure": [],
+            "analysis_report": {}
         }
