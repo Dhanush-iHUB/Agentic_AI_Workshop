@@ -132,7 +132,7 @@ class CTAOptimizationAgent(BaseAgent):
             "analysis": result
         }
     
-    def plan(self, intermediate_steps: List[Tuple[AgentAction, str]], **kwargs) -> Union[AgentAction, AgentFinish]:
+    def aplan(self, intermediate_steps: List[Tuple[AgentAction, str]], **kwargs) -> Union[AgentAction, AgentFinish]:
         """Plan next action based on current state"""
         content = kwargs.get("content", "")
         current_cta = kwargs.get("current_cta", "")

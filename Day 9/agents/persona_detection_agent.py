@@ -4,6 +4,7 @@ from langchain.chains import LLMChain
 from langchain.prompts import PromptTemplate
 from langchain.schema import AgentAction, AgentFinish
 from typing import List, Tuple, Dict, Any, Union
+from pydantic import BaseModel, Field
 
 class PersonaResult(BaseModel):
     persona: str = Field(..., description="Either 'genz' or 'professional'")
@@ -79,7 +80,7 @@ class PersonaDetectionAgent(BaseAgent):
             "explanation": result
         }
     
-    def plan(self, intermediate_steps: List[Tuple[AgentAction, str]], **kwargs) -> Union[AgentAction, AgentFinish]:
+    def aplan(self, intermediate_steps: List[Tuple[AgentAction, str]], **kwargs) -> Union[AgentAction, AgentFinish]:
         """Plan next action based on current state"""
         text = kwargs.get("text", "")
         

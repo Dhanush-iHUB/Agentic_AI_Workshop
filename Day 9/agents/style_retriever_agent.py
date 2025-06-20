@@ -4,7 +4,7 @@ from langchain.chains import LLMChain
 from langchain.prompts import PromptTemplate
 from langchain.schema import AgentAction, AgentFinish
 from langchain.vectorstores import Chroma
-from langchain.embeddings import GoogleGenerativeAIEmbeddings
+from langchain_google_genai import GoogleGenerativeAIEmbeddings
 from typing import List, Tuple, Dict, Any, Union
 import json
 import os
@@ -162,7 +162,7 @@ class StyleRetrieverAgent(BaseAgent):
             "matching_explanation": result
         }
     
-    def plan(self, intermediate_steps: List[Tuple[AgentAction, str]], **kwargs) -> Union[AgentAction, AgentFinish]:
+    def aplan(self, intermediate_steps: List[Tuple[AgentAction, str]], **kwargs) -> Union[AgentAction, AgentFinish]:
         """Plan next action based on current state"""
         text = kwargs.get("text", "")
         persona = kwargs.get("persona", "")

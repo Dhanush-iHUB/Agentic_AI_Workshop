@@ -24,9 +24,13 @@ class BaseAgent(BaseSingleActionAgent, ABC):
         pass
         
     @abstractmethod
-    def plan(self, intermediate_steps: List[Tuple[AgentAction, str]], **kwargs) -> Union[AgentAction, AgentFinish]:
+    def aplan(self, intermediate_steps: List[Tuple[AgentAction, str]], **kwargs) -> Union[AgentAction, AgentFinish]:
         """Plan the next action based on observations"""
         pass
+
+    def plan(self, intermediate_steps: List[Tuple[AgentAction, str]], **kwargs) -> Union[AgentAction, AgentFinish]:
+        """Wrapper for aplan to maintain compatibility"""
+        return self.aplan(intermediate_steps, **kwargs)
 
     @property
     def input_keys(self) -> List[str]:

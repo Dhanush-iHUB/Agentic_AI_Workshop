@@ -35,20 +35,18 @@ def optimize_content(html_input, html_file, target_persona=None):
     }
     if target_persona:
         target_persona = persona_map.get(target_persona, target_persona)
-    """
-    Process the input HTML and return optimized content
-    """
+
     try:
         # Use file content if provided, otherwise use text input
         final_html = process_html_file(html_file) if html_file else html_input
         
         if not final_html:
-            return "No HTML content provided", "Error: Please provide HTML content"
+            return "No HTML content provided", "Error: Please provide HTML content", None
             
         # Validate HTML
         is_valid, message = validate_html(final_html)
         if not is_valid:
-            return message, "Error: Invalid HTML"
+            return message, "Error: Invalid HTML", None
             
         # Optimize the content
         optimized_html, report = optimizer.optimize_content(final_html, target_persona)
@@ -56,53 +54,128 @@ def optimize_content(html_input, html_file, target_persona=None):
         # Format the report for display
         report_str = json.dumps(report, indent=2)
         
-        print(f"[App] Final Optimized HTML: {optimized_html[:200]}...")
-        print(f"[App] Optimization Report: {report_str}")
-        return optimized_html, report_str
+        # Create a success notification
+        notification = "✅ Content optimized successfully!"
+        
+        return optimized_html, report_str, notification
     
     except Exception as e:
         tb = traceback.format_exc()
         print(f"[App] Exception: {tb}")
-        return "", f"Error occurred during optimization:\n{str(e)}\n\nTraceback:\n{tb}"
+        return "", f"Error occurred during optimization:\n{str(e)}\n\nTraceback:\n{tb}", "❌ An error occurred"
+
+# Custom CSS for better styling
+custom_css = """
+.container {
+    max-width: 1200px;
+    margin: auto;
+    padding: 20px;
+}
+.main-title {
+    text-align: center;
+    margin-bottom: 2em;
+}
+.persona-box {
+    padding: 15px;
+    border-radius: 10px;
+    background-color: #f7f7f7;
+    margin: 10px 0;
+}
+.output-container {
+    border-left: 3px solid #2196F3;
+    padding-left: 20px;
+}
+"""
 
 # Create the Gradio interface
-with gr.Blocks(title="Persona-Driven Content Optimizer") as iface:
+with gr.Blocks(title="Persona-Driven Content Optimizer", css=custom_css) as iface:
     gr.Markdown("""
-    # 🎯 Persona-Driven Content Optimizer
-    
-    Upload your HTML content and get it optimized for your target audience!
-    The system will automatically detect the current audience and optimize accordingly,
-    or you can specify your target persona.
+    <div class="main-title">
+        # 🎯 Persona-Driven Content Optimizer
+        
+        Transform your content to resonate with your target audience using AI-powered optimization
+    </div>
     """)
     
-    with gr.Row():
-        with gr.Column():
-            input_html = gr.TextArea(
-                label="Input HTML",
-                placeholder="Paste your HTML content here...",
-                lines=10
-            )
-            file_input = gr.File(
-                label="Or Upload HTML File",
-                file_types=[".html", ".htm"],
-                type="binary"
-            )
-            persona_choice = gr.Radio(
-                choices=["Auto-detect", "Generation Z", "Professional"],
-                label="Target Persona",
-                value="Auto-detect"
-            )
-            submit_btn = gr.Button("Optimize Content", variant="primary")
+    with gr.Tabs():
+        with gr.TabItem("✨ Optimize Content"):
+            with gr.Row():
+                with gr.Column(scale=1):
+                    gr.Markdown("""
+                    ### 📝 Input Options
+                    Choose one of the following methods to provide your content:
+                    """)
+                    
+                    input_html = gr.TextArea(
+                        label="Option 1: Paste HTML Content",
+                        placeholder="Enter your HTML content here...",
+                        lines=10
+                    )
+                    
+                    file_input = gr.File(
+                        label="Option 2: Upload HTML File",
+                        file_types=[".html", ".htm"],
+                        type="binary"
+                    )
+                    
+                    with gr.Box(elem_classes="persona-box"):
+                        gr.Markdown("### 👥 Target Audience")
+                        persona_choice = gr.Radio(
+                            choices=["Auto-detect", "Generation Z", "Professional"],
+                            label="Select your target persona",
+                            value="Auto-detect",
+                            interactive=True
+                        )
+                    
+                    submit_btn = gr.Button("🚀 Optimize Content", variant="primary", size="lg")
+                
+                with gr.Column(scale=1, elem_classes="output-container"):
+                    notification = gr.Textbox(label="Status", interactive=False)
+                    output_html = gr.TextArea(
+                        label="✨ Optimized HTML",
+                        lines=10,
+                        show_copy_button=True
+                    )
+                    with gr.Accordion("📊 Detailed Report", open=False):
+                        optimization_report = gr.JSON(
+                            label="Optimization Analysis"
+                        )
         
-        with gr.Column():
-            output_html = gr.TextArea(
-                label="Optimized HTML",
-                lines=10
-            )
-            optimization_report = gr.TextArea(
-                label="Optimization Report",
-                lines=10
-            )
+        with gr.TabItem("ℹ️ Help & Information"):
+            gr.Markdown("""
+            ### 🎯 How It Works
+            
+            1. **Input Your Content**
+               - Paste your HTML directly into the text area, or
+               - Upload an HTML file using the file uploader
+            
+            2. **Choose Your Audience**
+               - Let AI detect your target audience automatically, or
+               - Manually select your preferred persona
+            
+            3. **Get Optimized Content**
+               - Click "Optimize Content" to transform your content
+               - Review the optimized HTML and detailed analysis
+               - Copy the results with one click
+            
+            ### 👥 Available Personas
+            
+            <div class="persona-box">
+            
+            **Generation Z**
+            - Casual and engaging tone
+            - Modern language patterns
+            - Emoji-rich content
+            - Short, impactful messages
+            
+            **Professional**
+            - Formal business tone
+            - Industry-standard terminology
+            - Clear and concise language
+            - Professional formatting
+            
+            </div>
+            """)
     
     submit_btn.click(
         fn=lambda html, file, persona: optimize_content(
@@ -111,20 +184,8 @@ with gr.Blocks(title="Persona-Driven Content Optimizer") as iface:
             None if persona == "Auto-detect" else persona.lower().replace(" ", "")
         ),
         inputs=[input_html, file_input, persona_choice],
-        outputs=[output_html, optimization_report]
+        outputs=[output_html, optimization_report, notification]
     )
-    
-    gr.Markdown("""
-    ### 📝 Instructions
-    1. Either paste your HTML content in the input box OR upload an HTML file
-    2. Choose your target audience (or let the system detect it)
-    3. Click "Optimize Content" to get your persona-optimized content
-    4. Review the optimized HTML and detailed report
-    
-    ### 🎯 Supported Personas
-    - **Generation Z**: Casual, trendy, emoji-rich content
-    - **Professional**: Formal, business-focused content
-    """)
 
 if __name__ == "__main__":
     # Check if GOOGLE_API_KEY is set
